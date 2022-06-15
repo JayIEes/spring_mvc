@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sist.dao.exam7">
+
+
+
+<!-- precedure : 
+	입력값 없이 모든 행을 조회하는 select Procedure -->
+<resultMap type="hashmap" id="map"/>
+
+<select id="selectAllTestProcedure" statementType="CALLABLE">
+	{call select_all_proc(
+			#{ allTestProc,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=map }
+	)}
+</select>
+
+
+
+<select id="selectNumTestProcedure" statementType="CALLABLE">
+	{call select_num_proc(
+			#{ num,mode=IN,jdbcType=NUMERIC},
+			#{ numTestProc,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=map }
+	)}
+</select>
+
+
+
+</mapper>
+
+
+
+
+
+
+
+

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sist.dao.exam4">
+
+<!-- join 
+	제조국 입력받아 제조국에 해당하는 모든 차량의 제조자, 모델명, 년식, 옵션, 이미지를 조회-->
+	
+<select id="selectCountry" resultType="String">
+	select distinct country
+	from car_country
+</select>
+	
+<resultMap type="jd" id="jdResult">
+	<result column="MAKER" property="maker"/>
+	<result column="MODEL" property="model"/>
+	<result column="CAR_YEAR" property="car_year"/>
+	<result column="CAR_OPTION" property="car_option"/>
+	<result column="CAR_IMG" property="car_img"/>
+	<result column="PRICE" property="price"/>
+</resultMap>
+
+
+
+<select id="join" resultMap="jdResult" parameterType="String">
+	select cma.maker, cmo.model, cmo.car_year, cmo.price, cmo.car_option, cmo.car_img
+	from car_country cc,car_maker cma,car_model cmo
+	where (cma.maker=cc.maker and cmo.model(+)=cma.model) and cc.country=#{country}
+</select>
+		
+		
+		
+		
+<!-- subquery와 join 
+	제조국 입력받아 제조국에 해당하는 보유차량 차량의 제조자, 모델명, 년식, 옵션, 이미지를 조회
+	단, 가장 마지막에 입력된 레코드 부터 10건의 레코드만 조회
+	-->		
+
+<select id="subqueryJoin" resultMap="jdResult" parameterType="String">
+	select rnum,maker, model,car_year, price, car_option,car_img
+	from(select row_number() over(order by cmo.hiredate desc) rnum,
+			cma.maker, cmo.model, cmo.car_year, cmo.price, cmo.car_option,cmo.car_img
+		 from car_country cc,car_maker cma,car_model cmo
+		 where (cma.maker=cc.maker and cmo.model=cma.model) and cc.country=#{country})
+	where rnum between 1 and 10	
+</select>
+
+	
+<!-- 테이블이 동적일때  
+	 EMP 본사 / CP_EMP5 지사
+	 
+	 본사 또는 지사에 근무하는 사원정보를 조회
+	 조회 컬럼 - 사원 번호 , 사원명, 연봉, 보너스
+	 -->
+	 
+<resultMap type="ed" id="edResult">
+	<result column="EMPNO" property="empno"/>
+	<result column="ENAME" property="ename"/>
+	<result column="SAL" property="sal"/>
+	<result column="COMM" property="comm"/>
+</resultMap>
+
+<select id="dynamicTable" resultMap="edResult" parameterType="String">
+	select empno,ename,sal,comm
+	from ${tab}
+</select>	
+	
+
+<!-- dynamic if
+	사원 테이블에서 job이 null이 아니면 job을 사용한 검색을 수행하고 
+	그렇지 않으면 모든 사원 정보를 조회
+	검색컬럼 사원번호, 사원명, 직무, 연봉
+	 -->	
+<select id="dynamicIf" resultType="ed" parameterType="String">
+	select empno, ename, job, sal
+	from emp
+	<where>
+		<if test="job != null and job!='' "><!-- $$ || -> 못쓴다!! and or 사용 -->
+			job=#{job}
+		</if>
+	</where> 
+</select>	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+

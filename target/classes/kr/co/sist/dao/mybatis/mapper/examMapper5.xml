@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sist.dao.exam5">
+
+<!-- choose의 사용
+	사원번호와 부서번호, 직무가 입력되는 상황에 
+	사원번호가 0이 아니면 사원번호를 사용한 검색수행
+	부선번호가 0이 아니면 부서번호를 사용한 검색수행
+	직무가 null 또는 ""가 아니면 직무를 사용한 검색 수행
+	-->
+<select id="choose" resultType="ed" parameterType="dynamicVO">
+	select empno,ename,deptno,job,hiredate 
+	from emp
+	<where>
+		<choose>
+			<when test="empno!=0">
+				empno=#{empno}
+			</when>
+			<when test="deptno">
+				deptno=#{deptno}
+			</when>
+			<when test="job!=null and job!=''">
+				job=#{job}
+			</when>
+		</choose>
+	</where>
+</select>
+
+
+
+<!-- choose의 trim의 사용 
+	사원번호와 부서번호, 직무가 입력되는 상황에 
+	사원번호가 0이 아니면 사원번호를 사용한 검색수행
+	부선번호가 0이 아니면 부서번호를 사용한 검색수행
+	직무가 null 또는 ""가 아니면 직무를 사용한 검색 수행
+	값이 모두 있으면 값은 or를 사용하여 모든 검색 수행
+	-->
+
+<select id="trim" resultType="ed" parameterType="dynamicVO">
+	select empno,ename,deptno,job,hiredate 
+	from emp
+	<where>
+			<if test="empno!=0">
+				empno=#{empno}
+			</if>
+			<if test="deptno!=0">
+				<trim prefix="or" prefixOverrides="or">
+					or deptno=#{deptno}
+				</trim>
+			</if>
+			<if test="job!=null and job!=''">
+				<trim prefix="or" prefixOverrides="or">
+					job=#{job}
+				</trim>
+			</if>
+	</where>
+</select>
+
+
+
+<!-- update 
+	cp_emp4 테이블에 update 수행
+	사원번호, 사원명, 직무, 연봉 입력받아 값이 존재한다면 해당컬럼의 값 변경
+	
+	 -->
+<update id="set" parameterType="empVO">
+	update cp_emp4
+	<set>
+		<if test="ename !=null and ename!=''">
+			ename=#{ename},
+		</if>
+		<if test="job !=null and job!=''">
+			job=#{job},
+		</if>
+		<if test="sal != 0">
+			sal=#{sal}
+		</if>
+	</set>
+	where empno=#{empno}
+</update>
+
+
+
+</mapper>
+
+
+
+
+
+
+
+

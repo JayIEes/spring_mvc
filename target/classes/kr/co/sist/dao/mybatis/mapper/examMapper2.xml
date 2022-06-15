@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sist.dao">
+
+
+<!-- 컬럼하나 행 여러개 조회 
+	emp 테이블에서 부서 번호를 입력받아 사원명 조회
+	List<String> list=SqlSession.selecList("scmr",10)-->
+<select id="scmr" resultType="String" parameterType="int">
+	select ename
+	from emp
+	where deptno=#{deptno}
+</select>
+
+
+
+
+<!-- 중복 쿼리문 선언 : 모든 쿼리문을 작성할 수 있다. -->
+<sql id="dupEmp">
+	select empno,ename, hiredate, deptno
+	from emp
+</sql>
+
+
+
+<!-- 컬럼 여러 개에 한 행 조회 
+	emp 테이블에서 사원 번호에 해당하는 사원번호, 사원명, 입사일, 부서번호를 조회
+	EmpDomain ed=ss.selectOne("mcsr",7788);
+	-->
+<select id="mcsr" resultType="ed" parameterType="int">
+	<include refid="dupEmp"/>	
+	where empno=#{empno}
+</select>
+
+
+
+<!-- 컬럼 여러 개에 여러 행 조회 
+	emp 테이블에서 부서 번호에 해당하는 사원의 사원번호, 사원명, 입사일, 부서번호를 조회
+	List<EmpDomain> ed=ss.selectList("mcmr",10);
+	-->
+<select id="mcmr" resultType="ed" parameterType="int">
+	<include refid="dupEmp"/>
+	where deptno=#{deptno}
+</select>
+	
+	
+	
+	
+	
+<!-- < 의 사용 
+	emp 테이블에서 입력된 연봉 이하 연봉을 수령하는 사원들의 사원번호, 사원명, 입사일, 부서번호를 조회
+	List<EmpDomain> ed=ss.selectList("lessThan",4000);
+	-->
+<select id="lessThan" resultType="ed" parameterType="int">
+	select empno,ename,sal, hiredate, deptno
+	from emp
+	<![CDATA[
+	where sal < #{sal}
+	]]>
+	order by sal desc
+</select>
+	
+	
+	
+	
+
+	
+</mapper>
+
+
+
+
+
+
+
+

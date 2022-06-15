@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<properties resource="properties/database.properties"/>
+  
+  <typeAliases>
+  	<typeAlias type="kr.co.sist.domain.mybatis.EmpDomain" alias="ed"/>
+  	<typeAlias type="kr.co.sist.domain.mybatis.ModelDomain" alias="md"/>
+  	<typeAlias type="kr.co.sist.vo.BoardVO" alias="boardVO"/>
+  	<typeAlias type="kr.co.sist.domain.mybatis.JoinDomain" alias="jd"/>
+  	<typeAlias type="kr.co.sist.vo.DynamicVO" alias="dynamicVO"/>
+  	<typeAlias type="kr.co.sist.vo.EmpVO" alias="empVO"/>
+  	<typeAlias type="kr.co.sist.vo.InsertVO" alias="insertVO"/>
+  </typeAliases>
+  
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+ 
+  <mappers>
+    <mapper resource="kr/co/sist/dao/mybatis/mapper/examMapper.xml"/>
+    <mapper resource="kr/co/sist/dao/mybatis/mapper/examMapper2.xml"/>
+    <mapper resource="kr/co/sist/dao/mybatis/mapper/examMapper3.xml"/>
+    <mapper resource="kr/co/sist/dao/mybatis/mapper/examMapper4.xml"/>
+    <mapper resource="kr/co/sist/dao/mybatis/mapper/examMapper5.xml"/>
+    <mapper resource="kr/co/sist/dao/mybatis/mapper/examMapper6.xml"/>
+    <mapper resource="kr/co/sist/dao/mybatis/mapper/examMapper7.xml"/>
+  </mappers>
+  
+  
+</configuration>

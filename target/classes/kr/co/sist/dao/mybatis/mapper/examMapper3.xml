@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sist.dao.exam3">
+
+<!-- > 의 사용 
+	emp 테이블에서 입력된 연봉 이하 연봉을 수령하는 사원들의 사원번호, 사원명, 입사일, 부서번호를 조회
+	List<EmpDomain> ed=ss.selectList("lessThan",4000);
+	-->
+<select id="greaterThan" resultType="ed" parameterType="int">
+	<![CDATA[
+	select empno,ename,sal, hiredate, deptno
+	from emp
+	where sal > #{sal}
+	order by sal desc
+	]]>
+</select>
+
+
+<!-- like 
+	-->
+<select id="like" resultType="md" parameterType="String">
+	select model,car_year,price,car_option,to_char(hiredate,'yyyy-mm-dd') hiredate,car_img
+	from car_model
+	where car_option like '%'||#{option}||'%'
+</select>
+
+
+<!-- car_model 테이블에서 전체 차량 건수 -->
+<!-- <select id="selectCarCnt" resultType="int">
+	select count(*) cnt
+	from car_model
+			<where>
+		<if test="keyword!=null and keyword !=''">
+			${field} like '%'||#{keyword}||'%'
+		</if>
+		</where>
+</select> -->
+<select id="selectCarCnt" resultType="int" parameterType="boardVO">
+	select count(*) cnt
+	from car_model
+		<where>
+		<if test="keyword!=null and keyword !=''">
+			${field} like '%'||#{keyword}||'%'
+		</if>
+		</where>
+</select>
+
+
+
+	
+<!-- car_model 테이블에서 입력된 시작번호와 끝번호 사이에 해당하는 차
+	가장 마지막에 입력된 차량순서로 조회-->
+	<!-- 컬럼과 setter를 미리 매핑 -->
+	<resultMap type="md" id="mdResult">
+		<result column="MODEL" property="model"/>
+		<result column="CAR_YEAR" property="car_year"/>
+		<result column="PRICE" property="price"/>
+		<result column="CAR_OPTION" property="car_option"/>
+		<result column="HIREDATE" property="hiredate"/>
+		<result column="CAR_IMG" property="car_img"/>
+	</resultMap>
+	
+<select id="subquery" resultMap="mdResult" parameterType="boardVO">
+	select  model,car_year,price,car_option,to_char(hiredate,'yyyy-mm-dd') hiredate,car_img
+	from(select row_number() over(order by hiredate desc) rnum, model,car_year,
+		price,car_option,hiredate, car_img
+		from car_model
+		<where>
+		<if test="keyword!=null and keyword !=''">
+			${field} like '%'||#{keyword}||'%'
+		</if>
+		</where>
+		)
+		
+	where rnum between #{startNum} and #{endNum}
+</select>
+
+
+<!-- union 테이블을 아래로 붙여 검색
+	 cp_emp3 테이블과 cp_emp4테이블을 합쳐서 보여줄때-->
+<select id="union" resultType="ed">
+	select empno, ename, job
+	from cp_emp3
+	union
+	select empno, ename, job
+	from cp_emp4
+</select>
+	
+
+
+
+
+	
+</mapper>
+
+
+
+
+
+
+
+

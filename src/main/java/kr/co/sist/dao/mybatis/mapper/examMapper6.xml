@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sist.dao.exam6">
+
+<!-- foreach 
+	하나의 부서번호, 여러개의 직무 입력받아 사원정보 조회-->
+<select id="dynamicForeach" resultType="ed" parameterType="java.util.HashMap">
+	select empno, ename,sal,comm,job,hiredate
+	from emp
+	<where>
+		deptno=#{deptno}
+		<if test="listJob.size != 0">
+			and job in 
+			<foreach collection="listJob"  index="i" open="(" item="job" separator="," close=")">
+				#{job}
+			</foreach>
+		</if>
+	</where>	
+</select>
+
+
+
+<!-- procedure 호출 
+		insert 작업을 수행하는 procedure 호출 
+		insert_test_proc 호출 
+		-->
+<select id="insertProc" statementType="CALLABLE" parameterType="insertVO">
+	{call insert_test_proc( 
+	#{num,mode=IN,jdbcType=NUMERIC },
+	#{name,mode=IN,jdbcType=VARCHAR },
+	#{email,mode=IN,jdbcType=VARCHAR },
+	#{age,mode=IN,jdbcType=NUMERIC },
+	#{row_cnt,mode=OUT,jdbcType=NUMERIC },
+	#{errmsg,mode=OUT,jdbcType=VARCHAR }
+	)}
+</select>
+
+
+
+
+<!-- procedure 호출 
+		update 작업을 수행하는 procedure 호출 
+		update_test_proc 호출 
+		-->
+<select id="updateProc" statementType="CALLABLE" parameterType="insertVO">
+	{call update_test_proc( 
+	#{num,mode=IN,jdbcType=NUMERIC },
+	#{age,mode=IN,jdbcType=NUMERIC },
+	#{email,mode=IN,jdbcType=VARCHAR },
+	#{row_cnt,mode=OUT,jdbcType=NUMERIC },
+	#{errmsg,mode=OUT,jdbcType=VARCHAR }
+	)}
+</select>
+
+
+<!-- procedure 호출 
+		delete 작업을 수행하는 procedure 호출 
+		delete_test_proc 호출 
+		-->
+<select id="deleteProc" statementType="CALLABLE" parameterType="insertVO">
+	{call delete_test_proc( 
+	#{num,mode=IN,jdbcType=NUMERIC },
+	#{row_cnt,mode=OUT,jdbcType=NUMERIC },
+	#{result_msg,mode=OUT,jdbcType=VARCHAR }
+	)}
+</select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
